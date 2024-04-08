@@ -4,6 +4,8 @@ import Input from "../../UIComponents/Input";
 import Button from "../../UIComponents/Button";
 import styles from "../../UIComponents/Styles";
 
+//import auth from '@react-native-firebase/auth';
+
 const UserProfilePage= ({navigation}) => {
 
     return (
@@ -23,6 +25,12 @@ const UserProfilePage= ({navigation}) => {
     async function goHome() {
         navigation.navigate('Home')
     }
+/*
+    async function logout(){
+        auth()
+        .signOut()
+        .then(() => console.log('User signed out!'));
+    }*/
 
 }
 

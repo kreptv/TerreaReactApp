@@ -3,7 +3,10 @@ import {Text, View, Alert} from 'react-native';
 import Input from "../../UIComponents/Input";
 import Button from "../../UIComponents/Button";
 import styles from "../../UIComponents/Styles";
-import axios from 'axios';
+import { firebaseConfig } from '../../../firebaseConfig';
+import { getFirestore, collection, getDocs, setDoc, doc, addDoc, getDoc } from 'firebase/firestore/lite';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {app, db} from "../../../InitializeFirebase";
 
 function RegisterPage({navigation}) {
 
@@ -13,38 +16,60 @@ function RegisterPage({navigation}) {
     const [confirm, setConfirm] = useState("");
 
     async function validateAndRegister() {
+
+
+        const db = getFirestore(app);
         // check that all values are defined
-        if (!name || !email || !password || !confirm) return Alert.alert("Fields cannot be blank.");
+        if (!name || !email || !password || !confirm) return alert("Fields cannot be blank.");
 
         // check that passwords match
-        if (password !== confirm) return Alert.alert("Passwords must match!");
+        if (password !== confirm) return alert("Passwords must match!");
 
-        // everything is good, try to register the user
-        await register()
-            .then((res) => {
-                console.log("success");
-            })
-            .catch((err) => {
-                // failure
-                console.log("failure");
-            });
+        // check that password is at least 6 letters long
+        if (password.length < 6) return alert("Password must be at least 6 characters long!");
 
+        // check that username is not already in db
+
+
+        const docRef = doc(db, "users", name);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            return alert("Username already in use! Please choose another.");
+        } else {
+            console.log("Username clear!");
+        }
+
+        // check that username is not already in database
+
+
+        const auth = getAuth();
+          createUserWithEmailAndPassword(auth, email, password)
+            .then(async (userCredential) => {
+
+                try {
+                    const userDoc = doc(db, "users", name)
+                    const docRef = await setDoc(userDoc, {
+                      username: name,
+                      email: email,
+                      admin: false
+                    });
+                    //console.log("Document written with ID: ", docRef.username);
+                  } catch (e) {
+                    console.error("Error adding document: ", e);
+                  }
 
             navigation.navigate('Confirm Email')
 
-
-    }
-
-    async function register() {
-        const url = "http://172.16.134.148:5000/register"; // TODO: UPDATE WHEN WE DEMO, MUST BE DEVICE LOCAL IP
-        const data = {
-            name: name,
-            email: email,
-            password: password,
-        }
-
-        // register user in db
-        return axios.post(url, data);
+              const user = userCredential.user;
+              //onChangeLoggedInUser(user.email);
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorMessage);
+            });
     }
 
     return (

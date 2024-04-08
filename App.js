@@ -2,7 +2,7 @@ import {useFonts, Quicksand_400Regular, Quicksand_600SemiBold} from '@expo-googl
 import {NavigationContainer} from "@react-navigation/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-
+import {app, db} from "./InitializeFirebase";
 
 import LogInPage from "./Terrea/LogInHub/LogInRegister/LogInPage";
 import RegisterPage from "./Terrea/LogInHub/LogInRegister/RegisterPage";
@@ -28,13 +28,17 @@ import BlobTradePage from "./Terrea/ShopsHub/BlobTrade/BlobTradePage";
 
 
 const Stack = createNativeStackNavigator();
+
 export default function App() {
 
-    let [fontsLoaded, fontError] = useFonts({
+      //const app = initializeApp(firebaseConfig);
+      //const db = getFirestore(app);
+
+    /*let [fontsLoaded, fontError] = useFonts({
         Quicksand_400Regular, Quicksand_600SemiBold
     });
 
-    if (!fontsLoaded) return null;
+    if (!fontsLoaded) return null;*/
 
     return (
         <NavigationContainer>

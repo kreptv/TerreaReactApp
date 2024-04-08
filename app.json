@@ -11,9 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "experiments": {
-      "baseUrl": "/TerreaReactApp"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -27,6 +24,7 @@
       }
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     }
   }
